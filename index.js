@@ -1,9 +1,6 @@
-let {
-    IncomingWebhook
-} = require('@slack/client');
+let { IncomingWebhook } = require('@slack/client');
 let markdowntable = require('markdown-table');
 let prettyms = require('pretty-ms');
-
 
 class SlackReporter {
     constructor(emitter, reporterOptions) {
@@ -17,23 +14,24 @@ class SlackReporter {
             console.log('please provide slack webhook url');
             return;
         }
+
         emitter.on('done', (err, summary) => {
             if (err) {
                 return;
             }
             let run = summary.run;
-            let data = []
+            let data = [];
             if (!title) {
                 title = summary.collection.name;
                 if (summary.environment.name) {
-                    title += ' - ' + summary.environment.name
+                    title += ' - ' + summary.environment.name;
                 }
             }
             let headers = [header, 'total', 'failed'];
             let arr = ['iterations', 'requests', 'testScripts', 'prerequestScripts', 'assertions'];
 
             data.push(headers);
-            arr.forEach(function (element) {
+            arr.forEach((element) => {
                 data.push([element, run.stats[element].total, run.stats[element].failed]);
             });
 
@@ -42,15 +40,14 @@ class SlackReporter {
             data.push(['total run duration', duration]);
 
             let table = markdowntable(data);
-            let text = `${title}\n${backticks}${table}${backticks}`
+            let text = `${title}\n${backticks}${table}${backticks}`;
             let msg = {
-                text: text
-            }
+                text: text,
+            };
 
-	    if (channel) {
-		msg['channel'] = channel;
+            if (channel) {
+                msg['channel'] = channel;
             }
-
 
             const webhook = new IncomingWebhook(webhookUrl);
             webhook.send(msg, (error, response) => {
