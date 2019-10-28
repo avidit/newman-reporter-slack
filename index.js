@@ -17,11 +17,6 @@ class SlackReporter {
             console.log('please provide slack webhook url');
             return;
         }
-        if (!channel) {
-            console.log('please provide slack channel');
-            return;
-        }
-
         emitter.on('done', (err, summary) => {
             if (err) {
                 return;
@@ -49,9 +44,13 @@ class SlackReporter {
             let table = markdowntable(data);
             let text = `${title}\n${backticks}${table}${backticks}`
             let msg = {
-                channel: channel,
                 text: text
             }
+
+	    if (channel) {
+		msg['channel'] = channel;
+            }
+
 
             const webhook = new IncomingWebhook(webhookUrl);
             webhook.send(msg, (error, response) => {
