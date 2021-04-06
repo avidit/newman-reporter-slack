@@ -2,6 +2,17 @@
 
 A [newman](https://github.com/postmanlabs/newman) reporter for [slack](https://slack.com/)
 
+newman run
+| collection - environment | total | failed  |
+|--------------------------|-------|---------|
+| iterations               | 1     | 0       |
+| requests                 | 1     | 0       |
+| testScripts              | 1     | 0       |
+| prerequestScripts        | 1     | 0       |
+| assertions               | 1     | 0       |
+| ------------------------ | ----- | ------- |
+| total run duration       | 100ms |         |
+
 ## Installation
     npm install newman-reporter-slack
 

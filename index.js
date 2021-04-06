@@ -1,9 +1,6 @@
-let {
-    IncomingWebhook
-} = require('@slack/client');
+let { IncomingWebhook } = require('@slack/client');
 let markdowntable = require('markdown-table');
 let prettyms = require('pretty-ms');
-
 
 class SlackReporter {
     constructor(emitter, reporterOptions) {
@@ -17,10 +14,6 @@ class SlackReporter {
             console.log('please provide slack webhook url');
             return;
         }
-        if (!channel) {
-            console.log('please provide slack channel');
-            return;
-        }
 
         let verbose = process.argv.includes("--verbose")
 
@@ -29,12 +22,12 @@ class SlackReporter {
                 return;
             }
             let run = summary.run;
-            let totalFailures = summary.run.failures
-            let data = []
+            let totalFailures = summary.run.failures;
+            let data = [];
             if (!title) {
                 title = summary.collection.name;
                 if (summary.environment.name) {
-                    title += ' - ' + summary.environment.name
+                    title += ' - ' + summary.environment.name;
                 }
             }
             let headers = [header, 'total', 'failed'];
@@ -42,12 +35,9 @@ class SlackReporter {
             let arr = ['iterations', 'requests', 'testScripts', 'prerequestScripts', 'assertions'];
 
             data.push(headers);
-            arr.forEach(function (element) {
+            arr.forEach((element) => {
                 data.push([element, run.stats[element].total, run.stats[element].failed]);
             });
-
-
-
 
             let duration = prettyms(run.timings.completed - run.timings.started);
             data.push(['------------------', '---------------------------------', '------------------------------']);
@@ -67,12 +57,14 @@ class SlackReporter {
                 totalFailures.forEach((failure, index) => pushErrors(index))
             }
 
-
             let table = markdowntable(data);
-            let text = `${title}\n${backticks}${table}${backticks}`
+            let text = `${title}\n${backticks}${table}${backticks}`;
             let msg = {
-                channel: channel,
-                text: text
+                text: text,
+            };
+
+            if (channel) {
+                msg['channel'] = channel;
             }
 
             const webhook = new IncomingWebhook(webhookUrl);
