@@ -15,7 +15,7 @@ class SlackReporter {
             return;
         }
 
-        let verbose = process.argv.includes("--verbose")
+        let verbose = process.argv.includes('--verbose');
 
         emitter.on('done', (err, summary) => {
             if (err) {
@@ -31,7 +31,7 @@ class SlackReporter {
                 }
             }
             let headers = [header, 'total', 'failed'];
-            let headersFailures = ['request failures', 'assertion', 'error']
+            let headersFailures = ['request failures', 'assertion', 'error'];
             let arr = ['iterations', 'requests', 'testScripts', 'prerequestScripts', 'assertions'];
 
             data.push(headers);
@@ -44,17 +44,21 @@ class SlackReporter {
             data.push(['total run duration', duration]);
             data.push(['------------------', '---------------------------------', '------------------------------']);
             if (verbose) {
-                data.push(headersFailures)
-                data.push(['------------------', '---------------------------------', '------------------------------']);
+                data.push(headersFailures);
+                data.push([
+                    '------------------',
+                    '---------------------------------',
+                    '------------------------------',
+                ]);
 
                 function pushErrors(index) {
                     let failures = summary.run.failures[index];
                     let request = failures.source.name;
-                    let failuresTest = failures.error.test
-                    let failuresMessage = failures.error.message
-                    data.push([request, failuresTest, failuresMessage])
+                    let failuresTest = failures.error.test;
+                    let failuresMessage = failures.error.message;
+                    data.push([request, failuresTest, failuresMessage]);
                 }
-                totalFailures.forEach((failure, index) => pushErrors(index))
+                totalFailures.forEach((failure, index) => pushErrors(index));
             }
 
             let table = markdowntable(data);
